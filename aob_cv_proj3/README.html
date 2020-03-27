@@ -1,0 +1,809 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2020-03-22 Sun 10:31 -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Basic Computer Vision Project</title>
+<meta name="generator" content="Org mode" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2019 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title">Basic Computer Vision Project</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgf734960">1. Introduction</a></li>
+<li><a href="#org7714680">2. Vidéos et Caméras:</a></li>
+<li><a href="#org31f99da">3. Context:</a></li>
+<li><a href="#orgeb174d3">4. Travail à effectuer:</a>
+<ul>
+<li><a href="#org82e2f6c">4.1. Extraire les informations sur le processeur de votre machine:</a></li>
+<li><a href="#orgca31c22">4.2. Analyse des performances et optimisation:</a>
+<ul>
+<li><a href="#org48c0a2c">4.2.1. Au niveau du code:</a></li>
+<li><a href="#org695cb37">4.2.2. À la compilation:</a></li>
+</ul>
+</li>
+<li><a href="#org69ba732">4.3. Stabilité de l'environnement de mesures:</a></li>
+</ul>
+</li>
+<li><a href="#org47f0fa2">5. Rapport:</a></li>
+<li><a href="#org78bb974">6. Rendu final:</a></li>
+<li><a href="#orgf60eebe">7. Outils à installer:</a>
+<ul>
+<li><a href="#org46869eb">7.1. Nécessaires</a></li>
+<li><a href="#orgd29e428">7.2. Facultatifs maits utiles</a></li>
+<li><a href="#org07c4924">7.3. Liens utiles</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="org-center">
+<p>
+
+</p>
+
+<p>
+<b>ATTENTION</b>
+</p>
+
+<p>
+Tout plagiat, ou tentative de plagiat, ainsi que toute présentation de travaux (ou données), complets ou partiels, dont vous n'êtes pas l'auteur original sera sanctionné
+par un 0 et sera signalé à la scolarité.
+</p>
+</div>
+
+
+<div id="outline-container-orgf734960" class="outline-2">
+<h2 id="orgf734960"><span class="section-number-2">1</span> Introduction</h2>
+<div class="outline-text-2" id="text-1">
+<blockquote>
+<p>
+
+</p>
+
+<p>
+Ce projet consiste en l'analyse et l'optimisation des performances d'un code donné qui a pour but d'appliquer des transformations
+sur du contenu vidéo brut (RGB) non compressé stocké dans un fichier.
+</p>
+
+<p>
+<b>R</b> = Rouge ou Red
+</p>
+
+<p>
+<b>G</b> = Vert  ou Green
+</p>
+
+<p>
+<b>B</b> = Bleu  ou Blue
+</p>
+
+<p>
+<b>IA</b> = Inférence Artificielle (pas Intelligence)
+</p>
+</blockquote>
+</div>
+</div>
+
+<div id="outline-container-org7714680" class="outline-2">
+<h2 id="org7714680"><span class="section-number-2">2</span> Vidéos et Caméras:</h2>
+<div class="outline-text-2" id="text-2">
+
+<div id="org9081f6c" class="figure">
+<p><img src="./img/FPS.png" alt="FPS.png" />
+</p>
+<p><span class="figure-number">Figure 1: </span>Représentation visuelle d'une seconde de flux vidéo à 24 FPS</p>
+</div>
+
+<p>
+Une vidéo est généralement considérée comme étant une séquence d'images (ou frames) qui défilent dans le temps <a href="#org9081f6c">1</a>. 
+</p>
+
+
+<div class="figure">
+<p><img src="./img/SonyAPS.jpg" alt="SonyAPS.jpg" />
+</p>
+</div>
+
+
+<div id="org73f83eb" class="figure">
+<p><img src="./img/APS.jpg" alt="APS.jpg" />
+</p>
+<p><span class="figure-number">Figure 3: </span>Exemple de capteurs APS Sony</p>
+</div>
+
+<p>
+Parmi les métriques de qualité vidéo, on compte le nombre de frames par seconde (FPS) qui est définit par l'oscillateur (Crystal) qui enclenche le capteur APS (Active-Pixel Sensor) <a href="#org73f83eb">3</a>
+à chaque top d'horloge. Par exemple, sur les caméras vidéos que l'on trouve dans une grande partie de l'électronique de consommation, les fréquences des oscillateurs
+varient entre 24Hz (moyen gamme, 24FPS) et +60Hz (haut de gamme, +60FPS). 
+</p>
+
+
+<div id="org71ec7d9" class="figure">
+<p><img src="./img/UHSC.png" alt="UHSC.png" />
+</p>
+<p><span class="figure-number">Figure 4: </span>Caméra UHS</p>
+</div>
+
+<p>
+Sur des caméras ultra haute vitesse (Ultra High Speed) <a href="#org71ec7d9">4</a>, les oscillateurs utilisés
+peuvent atteindre des fréquences de 1GHz (1 milliard de FPS ou 1 frame par nano seconde).
+</p>
+
+<p>
+<a href="https://www.phantomhighspeed.com/products/cameras/veo/veo1310">https://www.phantomhighspeed.com/products/cameras/veo/veo1310</a>
+</p>
+
+<p>
+<a href="https://stanfordcomputeroptics.com/products/iccd-framing-camera.html?pk_campaign=Main-SCO&amp;pk_kwd=highspeedcamera">https://stanfordcomputeroptics.com/products/iccd-framing-camera.html?pk_campaign=Main-SCO&amp;pk_kwd=highspeedcamera</a>
+</p>
+
+<p>
+Le capteur APS (appelé aussi CMOS) est une matrice bidimentionnelle de photodiodes qui capturent chacune l'intensité et la couleur de la lumière et
+retournent un signal électrique analogique. Ce signal analogique est ensuite échantillonné et convertit en un signal numérique encodé sur 1 octet par un ADC
+(Analog to Digital Converter). Chacun de ces octets représente numériquement l'intensité d'une des trois couleurs de base (RGB) qui encodent
+une palette de 16 millions de couleurs (2<sup>24</sup> = 16.777.216 avec 3 octets = 3 x 8 = 24 bits). Les photodiodes du capteur APS sont organisées par groupes de 3 pour former
+un pixel (Picture element). Chaque photodiode est munie d'un filtre de couleur: R, G, ou B, comme dans la figure <a href="#orgbe999bb">5</a>.
+</p>
+
+
+<div id="orgbe999bb" class="figure">
+<p><img src="./img/APS_CMOS.jpg" alt="APS_CMOS.jpg" />
+</p>
+<p><span class="figure-number">Figure 5: </span>Capteur APS CMOS</p>
+</div>
+
+<p>
+Le capteur APS est principalement caractérisé par sa largeur (width - W) et sa hauteur (height - H), qui permettent de définir sa résolution (et donc celle de l'image),
+<b>R = H x W</b> pixels ainsi que sa densité en photodiodes: <b>3 x W x H</b> photodiodes.    
+Donc, une image (ou frame) est une matrice de pixels (RGB) avec une hauteur (H ou nombre de lignes) et une largeur (W ou nombre de colonnes) prédéfinies.
+Pour un capteur de largeur W=4.000.000 et de hauteur H=4.000.000, on peut obtenir une image de 16 mégapixels de résolution maximale.
+</p>
+
+<p>
+Lorque la caméra est activée, le courant électrique est contrôlé par l'oscillateur qui, à chaque top ascendant, active le capteur APS qui fournit <b>W x H x 3</b> signaux
+analogiques à l'ADC qui les convertit en valeurs numériques et les enregistre dans une mémoire temporaire (buffer) dont la taille est de <b>W x H x 3</b> octets.  
+</p>
+
+<p>
+Pour un capteur de largeur W=1280 et de hauteur H=720, il faut donc un frame buffer de: <b>1280 x 720 x 3 = 2.764.800 octets = 2.6 MiB</b>. 
+Si le capteur oscille à une fréquence de 24Hz (24FPS) et sachant qu'un frame nécessite 2.6 MiB de stockage mémoire, stocker une seconde nécessite un buffer de
+<b>24 x 2.6 MiB = 62.4 MiB</b>. Pour 60FPS: <b>60 x 2.6 MB = 156 MiB</b>. 
+</p>
+</div>
+</div>
+
+<div id="outline-container-org31f99da" class="outline-2">
+<h2 id="org31f99da"><span class="section-number-2">3</span> Context:</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Depuis quelques années, l'Inférence Artificielle (intelligence est un bien grand mot pour qualifier le procédé) et les réseaux de neurones sont de plus en plus utilisés afin
+d'effectuer des tâches qui étaient exclusivement déléguées aux humains. Par exemple, les entreprises américaines Tesla &amp; Comma AI ont réussi à entraîner plusieurs réseaux
+de neurones à la conduite de véhicules automobiles en n'utilisant que des caméras (plusieurs pour le "Tesla autopilot" et une seule pour le "Comma AI Open Pilot").
+Dans les véhicules d'autres constructeurs, plusieurs capteurs sont combinés, en plus des caméras, afin d'effectuer l'analyse de scène sur laquelle se basera la prise de
+décision. Même si les véhicules Tesla sont munis de capteurs, ils restent une source de données secondaire pour l'autopilot.   
+Cet exploit est souvent attribué aux avancements dans l'exploitation des réseaux de neurones à convolutions, mais le plus important est la quantité et la qualité
+des données - qui nourrissent les réseaux de neurones - extraites d'un simple flux vidéo avec les algorithmes de traitement d'images.
+Avant de charger les frames vidéo dans le réseau de neurones, plusieurs analyses sont effectuées (séquentiellement et en parallèle). Parmi ces analyses:
+</p>
+
+<p>
+1 - Inversion des couleurs (color inversion)
+	    L'inversion des couleurs d'un frame permet de créer un mask négatif utilisé pour l'analyse de profondeur afin d'approximer les dimensions, en 3D, des objets détectés.
+</p>
+
+<p>
+2 - Détection des contours 
+</p>
+
+<p>
+    Afin d'effectuer l'analyse de contours avec l'algorithme de Sobel, l'image doit être convertie en niveau de gris afin d'éviter les artefacts dus à la variation de
+couleurs (contrast). Il existe plusieurs algorithmes de conversion: échantillonage, pondération des composantes RGB, &#x2026; L'échantillonage étant souvent plébicité pour la 
+simplicité des circuits électroniques qui ne nécessitent aucune unité de calcul.
+Par contre, l'algorithme avec pondérations nécessite des unités de multiplication et d'addition flottantes et des convertisseurs flottant-entier.
+La différence entre les deux algorithmes réside principalement dans la qualité de l'image après conversion.
+</p>
+
+<p>
+Après la conversion en niveau de gris, les filtres de Sobel (vertical &amp; horizontal) sont appliqués (convolution) au frame afin de tracer les contours
+des objets présents dans l'image. C'est sur la base de ces contours que le réseau de neurones tentera d'identifier les objets en classifiant leur forme. 
+</p>
+
+<p>
+Il existe plusieurs algorithmes de détection de contours, par exemple: Kirsch edge filter et Prewitt edge filter.
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgeb174d3" class="outline-2">
+<h2 id="orgeb174d3"><span class="section-number-2">4</span> Travail à effectuer:</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Vous avez pour tâche d'analyser et d'améliorer les performances des codes fournis en documentant et justifiant les étapes suivies (fructueuses ou pas).
+Pour ce faire, il vous faut respecter un protocol expérimental rigoureux pour ne pas laisser de place à des instabilités inexplicables.
+</p>
+</div>
+
+<div id="outline-container-org82e2f6c" class="outline-3">
+<h3 id="org82e2f6c"><span class="section-number-3">4.1</span> Extraire les informations sur le processeur de votre machine:</h3>
+<div class="outline-text-3" id="text-4-1">
+<div class="org-center">
+<p>
+
+</p>
+
+<p>
+<b>IMPORTANT:</b> Définir si vos expériences ont été effectuées sur une machine réelle ou sur une machine virtuelle. Il est préférable que les mesures soient faites
+sur une machine réelle avec Linux installé en natif.
+</p>
+</div>
+
+<p>
+Dans le répertoire de votre rendu du projet, vous devez fournir un répertoire nommé "arch" contenant deux répertoires "cpu" et "caches"
+populés comme suit:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+$ mkdir arch arch/cpu arch/caches
+
+</pre>
+</div>
+
+<p>
+Version du noyau de l'OS:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+$ uname -a &gt; arch/OS.txt
+
+</pre>
+</div>
+
+<p>
+Version du compilateur gcc:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+$ gcc --version &gt; arch/gcc.txt
+
+</pre>
+</div>
+
+<p>
+Version de la libc:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+$ ldd --version &gt; arch/ldd.txt
+
+</pre>
+</div>
+
+<p>
+Informations sur le processeur:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+$ cat /proc/cpuinfo &gt; arch/cpu/cpuinfo
+
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">La configuration du cache d'instructions L1:      </span>
+$ cat /sys/devices/system/cpu/cpu0/cache/index0/* &gt; arch/caches/L1i
+
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">La configuration du cache de donn&#233;es L1:      </span>
+$ cat /sys/devices/system/cpu/cpu0/cache/index1/* &gt; arch/caches/L1d
+
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">La configuration du cache de donn&#233;es L2:      </span>
+$ cat /sys/devices/system/cpu/cpu0/cache/index2/* &gt; arch/caches/L2
+
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">La configuration du cache de donn&#233;es L3:      </span>
+$ cat /sys/devices/system/cpu/cpu0/cache/index3/* &gt; arch/caches/L3
+
+</pre>
+</div>
+
+<p>
+Pour ajouter les sorties des outils lstopo ou likwid-topology:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+$ lstopo-nographics &gt; arch/lstopo.txt
+
+$ likwid-topology &gt; arch/likwid-topology.txt
+
+</pre>
+</div>
+
+<p>
+Si vous utilisez d'autres compilateur que GCC, i.e.: LLVM (clang, zapcc, aocc), Intel C/C++ Compiler (ICC), Oracle C/C++ Compiler (Sun Studio), &#x2026; vous devez spécifier
+la version des outils.  
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">ICC</span>
+$ icc --version &gt; arch/icc.txt
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">LLVM</span>
+$ clang --version &gt; arch/clang.txt
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">SunCC</span>
+$ suncc -V &gt; arch/suncc.txt
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgca31c22" class="outline-3">
+<h3 id="orgca31c22"><span class="section-number-3">4.2</span> Analyse des performances et optimisation:</h3>
+<div class="outline-text-3" id="text-4-2">
+<p>
+L'objectif global de l'optimisation est de faire en sorte que le code à exécuter sur l'architecture cible exploite convenablement toutes les ressources disponibles
+(multi-coeur, SIMD, synchronisation, &#x2026;) et au bon moment afin de minimiser le temps des traitements et économiser de l'énergie électrique (Watts).
+En réalité, l'optimisation de code est un procédé qui, dans un environement (CPU, OS, langages, compilateurs, &#x2026;) bien conçu, ne devrait pas exister.
+Malheureusement, ou heureusement, les architectures CPU modernes sont de plus en plus complexes (mal/peu documentées) et les besoins en calcul de plus en plus nécessaires
+et divers (simulation numériques, IA, traitement de signal, compression, &#x2026;). Aussi, les langages et les compilateurs doivent non seulement s'adapter aux nouveaux
+patterns des codes émergents, mais aussi garantir un minimum de performance, ou au moins la possibilité de piloter le compilateur afin d'obtenir un codé généré décent.
+</p>
+
+<p>
+L'optimization peut se faire à plusieurs niveaux:
+</p>
+</div>
+
+<div id="outline-container-org48c0a2c" class="outline-4">
+<h4 id="org48c0a2c"><span class="section-number-4">4.2.1</span> Au niveau du code:</h4>
+<div class="outline-text-4" id="text-4-2-1">
+<ul class="org-ul">
+<li>Étudier si les implémentations sont adaptées à l'architecture cible (votre machine)</li>
+<li>Étudier les patterns d'accès au données (origine: mémoire, caches, &#x2026;)</li>
+<li>Étudier si l'imbrication des boucles est nécessaire</li>
+<li>Étudier si les I/O disques peuvent être réduites ou leur latence minimisée</li>
+<li>Le code est-il vectorisé ou vectorisable?</li>
+<li>Le code est-il parallèle ou parallélisable?</li>
+<li>Utilisation de librariries externes BLAS, MKL, &#x2026; (il faudra expliquer en détail pourquoi et comment)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org695cb37" class="outline-4">
+<h4 id="org695cb37"><span class="section-number-4">4.2.2</span> À la compilation:</h4>
+<div class="outline-text-4" id="text-4-2-2">
+<ul class="org-ul">
+<li>Étudier les performances du code avec plusieurs flags d'optimisation et les comparer dans un tableau</li>
+<li>Étudier le code assembleur généré des fonctions cibles pour chacun des flags utilisés</li>
+</ul>
+
+<p>
+Note:
+   . Vous devez produire plusieurs versions des fonctions (en C ou en assembleur, &#x2026;) cibles et comparer leurs performances dans un tableau
+	. Vous devez aussi fournir les courbes qui permettent de visualiser l'évolution des performances de chacun des codes.
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org69ba732" class="outline-3">
+<h3 id="org69ba732"><span class="section-number-3">4.3</span> Stabilité de l'environnement de mesures:</h3>
+<div class="outline-text-3" id="text-4-3">
+<ol class="org-ol">
+<li>S'assurer que la machine cible est connectée au secteur, cela évite les ajustements dynamiques de la fréquence du processeur.</li>
+<li><p>
+S'assurer que la fréquence du processeur est fixe (de préférence au maximum) durant les mesures.
+</p>
+
+<p>
+Commande pour consulter la configuration des coeurs 0, 1, 2, et 3 en terme de fréquence et de possiblités de fréquences.
+</p></li>
+</ol>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+$ cpupower -c 0-3 frequency-info
+
+</pre>
+</div>
+
+<p>
+Commandes pour configurer la fréquence du processeur.
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">En utilisant le gouverneur performance du noyau Linux</span>
+$ cpupower -c 0-3 frequency-set -g performance
+
+</pre>
+</div>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+<span style="color: #ffff00;">#</span><span style="color: #ffff00;">En sp&#233;cifiant manuellement la fr&#233;quence</span>
+$ cpupower -c 0-3 frequency-set -u 3.8GHz
+
+</pre>
+</div>
+
+<p>
+Les codes fournis sont munis des fonctions nécessaires au calcul de la déviation standard et des statistiques (min, max, avg, &#x2026;) relatives aux mesures effectuées.
+Vous trouverez aussi un makefile et des scripts exemples pour lancer les expériences, convertir les fichiers depuis le format vidéo brut vers le format mp4 et générer
+les courbes de performance. Il vous faudra aujouter au makefile une règle par variante et modifier le code source avec les directives du pré-processeur nécessaires pour
+ne compiler que la variante spécifiée.
+</p>
+
+<p>
+Tous les coups sont permis afin d'améliorer les performances: réécriture des fonctions en intrinsics Intel, en assembleur, librarie externe, &#x2026; 
+</p>
+
+<p>
+Si vous décidez d'utiliser des outils d'analyse de performance comme <b>VTune</b>, <b>MAQAO</b>, <b>perf</b>, &#x2026; vous devez fournir les sorties de ces outils dans un répertoire
+qui porte le nom de l'outil.
+</p>
+
+<p>
+Pour lancer une analyse sur la version de base:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+$ ./run
+
+</pre>
+</div>
+
+<p>
+Les résultats ainsi que les courbes sont dans le répertoire "<code>data_runs</code>" et dans les sous répertoires <b>O1</b>, <b>O2</b>, &#x2026;
+</p>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org47f0fa2" class="outline-2">
+<h2 id="org47f0fa2"><span class="section-number-2">5</span> Rapport:</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Vous devez fournir un rapport avec une analyse algorithmique des méthodes proposées ainsi que les analyses (et la comparaison) des performances des différentes implémentations.
+Ce rapport doit commencer avec une introduction qui reformule l'objectif du rapport/projet et qui présente les sections à venir de manière sommaire.
+Évitez de mettre des longs listings de code dans le corps du rapport (pas plus de 10 lignes)., sinon mettre le code dans un appendice à la fin du rapport.
+Il vous faudra citer vos sources (publicatiosn scientifiques, thèses, articles sur le web, &#x2026;) en les listant à la fin du rapport dans la section:
+<b>Références et bibliographie</b>.
+</p>
+
+<p>
+Votre rapport devra contenir une table des figures, ainsi qu'une table des matières. Il faudra aussi définir les acronymes utilisés dans une table.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org78bb974" class="outline-2">
+<h2 id="org78bb974"><span class="section-number-2">6</span> Rendu final:</h2>
+<div class="outline-text-2" id="text-6">
+<p>
+Vous devez fournir une archive tar compressée (<code>aob_cv_NOM_PRENOM.tar.gz</code>) contenant:
+</p>
+
+<ol class="org-ol">
+<li>Le code source des différentes variantes implémentées</li>
+<li>Les données de vos mesures pour chacune des variantes (i.e. <code>data_runs</code>)</li>
+<li>Le rapport en format PDF</li>
+</ol>
+
+<p>
+Pour obtenir une archive compressée:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+$ tar -cf aob_cv_NOM_PRENOM.tar
+$ gzip -9 aob_cv_NOM_PRENOM.tar
+
+</pre>
+</div>
+
+<p>
+Pour extraire le contenu de l'archive du projet:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">
+$ tar -xf aob_cv_proj.tar.gz
+
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-orgf60eebe" class="outline-2">
+<h2 id="orgf60eebe"><span class="section-number-2">7</span> Outils à installer:</h2>
+<div class="outline-text-2" id="text-7">
+</div>
+<div id="outline-container-org46869eb" class="outline-3">
+<h3 id="org46869eb"><span class="section-number-3">7.1</span> Nécessaires</h3>
+<div class="outline-text-3" id="text-7-1">
+<p>
+<b>gnuplot</b> : outil de représentation graphiques
+</p>
+
+<p>
+<b>ffmpeg</b>  : outil de conversion vidéo
+</p>
+</div>
+</div>
+
+<div id="outline-container-orgd29e428" class="outline-3">
+<h3 id="orgd29e428"><span class="section-number-3">7.2</span> Facultatifs maits utiles</h3>
+<div class="outline-text-3" id="text-7-2">
+<p>
+<b>perf</b>  : outil d'analyse de performances
+</p>
+
+<p>
+<b>likwid</b>  : suite d'outils d'analyse de performances
+</p>
+
+<p>
+<b>hwloc (lstopo)</b> : outil qui extrait la configuartion et la topologie de la machine 
+</p>
+
+<p>
+<b>maqao</b>  : outil d'analyse de performances
+</p>
+</div>
+</div>
+
+<div id="outline-container-org07c4924" class="outline-3">
+<h3 id="org07c4924"><span class="section-number-3">7.3</span> Liens utiles</h3>
+<div class="outline-text-3" id="text-7-3">
+<p>
+<b>Compiler explorer</b> : <a href="https://godbolt.org">https://godbolt.org</a>
+</p>
+
+<p>
+<b>Guide des intrinsics d'Intel</b> : <a href="https://software.intel.com/sites/landingpage/IntrinsicsGuide/#">https://software.intel.com/sites/landingpage/IntrinsicsGuide/#</a>
+</p>
+
+<p>
+<b>Guide d'optimisation d'Agner Fog</b> : <a href="https://www.agner.org/optimize/">https://www.agner.org/optimize/</a>
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="date">Created: 2020-03-22 Sun 10:31</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
