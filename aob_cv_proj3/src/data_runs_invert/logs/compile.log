@@ -1,0 +1,12 @@
+gcc -DBASELINE=1 -g3 -O1 invert.c common.c -o invert -lm
+gcc -DV1=1 -g3 -O1 invert.c common.c -o invert -lm
+gcc -DV2=1 -g3 -O1 invert.c common.c -o invert -lm
+gcc -DBASELINE=1 -g3 -O2 invert.c common.c -o invert -lm
+gcc -DV1=1 -g3 -O2 invert.c common.c -o invert -lm
+gcc -DV2=1 -g3 -O2 invert.c common.c -o invert -lm
+gcc -DBASELINE=1 -g3 -O3 invert.c common.c -o invert -lm
+gcc -DV1=1 -g3 -O3 invert.c common.c -o invert -lm
+gcc -DV2=1 -g3 -O3 invert.c common.c -o invert -lm
+gcc -DBASELINE=1 -g3 -Ofast invert.c common.c -o invert -lm
+gcc -DV1=1 -g3 -Ofast invert.c common.c -o invert -lm
+gcc -DV2=1 -g3 -Ofast invert.c common.c -o invert -lm

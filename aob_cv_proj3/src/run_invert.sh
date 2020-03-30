@@ -55,7 +55,7 @@ do
     cp "plot_inv.gp" $dir"/"$opt
     
     #Going through invert code variants
-    for variant in inv_baseline 
+    for variant in inv_baseline inv_v1 inv_v2
     do
 	#
 	echo -e "\tVariant: "$variant

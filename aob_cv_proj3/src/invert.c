@@ -26,6 +26,38 @@ void process_baseline(u8 *frame)
 }
 
 //
+void process_v1(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  for (unsigned y = 0 ; y < H ; ++y)
+    for (unsigned x = 0 ; x < W_max ; x += 3)
+      {
+        unsigned indexR = INDEX(y, x, W_max);
+        unsigned indexG = indexR + 1;
+        unsigned indexB = indexG + 1;
+
+        //Invert each colour component of every pixel
+        frame[indexR] = 255 - frame[indexR]; //Red
+        frame[indexG] = 255 - frame[indexG]; //Green
+        frame[indexB] = 255 - frame[indexB]; //Blue
+      }
+}
+
+//
+void process_v2(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  for (unsigned y = 0 ; y < H ; ++y){
+    unsigned index_max = INDEX(y, W_max, W_max);
+    for (unsigned index = INDEX(y, 0, W_max) ; index < index_max ; index++)
+      {
+        //Invert each colour component of every pixel
+        frame[index] = 255 - frame[index];
+      }
+  }
+}
+
+//
 int main(int argc, char **argv)
 {
   //
@@ -35,6 +67,7 @@ int main(int argc, char **argv)
   //
   u64 cycles[MAX_SAMPLES], cycles_a, cycles_b;
   u64 nb_bytes = 1, frame_count = 0, samples_count = 0, frame_size = sizeof(u8) * H * W * 3;
+  i32 i;
   
   //
   u8 *frame = _mm_malloc(frame_size, 32);
@@ -64,7 +97,14 @@ int main(int argc, char **argv)
       
 #if BASELINE
       process_baseline(frame);
-#endif      
+#endif 
+#if V1
+      process_v1(frame);
+#endif
+#if V2
+      process_v2(frame);
+#endif
+     
       
       //Stop
       cycles_a = rdtsc();
