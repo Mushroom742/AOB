@@ -1,12 +1,108 @@
-gcc -DBASELINE=1 -g3 -O1 invert.c common.c -o invert -lm
-gcc -DV1=1 -g3 -O1 invert.c common.c -o invert -lm
-gcc -DV2=1 -g3 -O1 invert.c common.c -o invert -lm
-gcc -DBASELINE=1 -g3 -O2 invert.c common.c -o invert -lm
-gcc -DV1=1 -g3 -O2 invert.c common.c -o invert -lm
-gcc -DV2=1 -g3 -O2 invert.c common.c -o invert -lm
-gcc -DBASELINE=1 -g3 -O3 invert.c common.c -o invert -lm
-gcc -DV1=1 -g3 -O3 invert.c common.c -o invert -lm
-gcc -DV2=1 -g3 -O3 invert.c common.c -o invert -lm
-gcc -DBASELINE=1 -g3 -Ofast invert.c common.c -o invert -lm
-gcc -DV1=1 -g3 -Ofast invert.c common.c -o invert -lm
-gcc -DV2=1 -g3 -Ofast invert.c common.c -o invert -lm
+gcc -DBASELINE=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DONE_LOOP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DBITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_BITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL_BITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+gcc -DBASELINE=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DONE_LOOP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DBITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_BITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL_BITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+gcc -DBASELINE=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DONE_LOOP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DBITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_BITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL_BITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+gcc -DBASELINE=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DONE_LOOP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DBITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_BITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL_BITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DBASELINE=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DONE_LOOP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DBITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_BITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL_BITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -O1 invert.c common.c -o invert -lm -fopenmp
+icc -DBASELINE=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DONE_LOOP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DBITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_BITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL_BITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -O2 invert.c common.c -o invert -lm -fopenmp
+icc -DBASELINE=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DONE_LOOP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DBITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_BITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL_BITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -O3 invert.c common.c -o invert -lm -fopenmp
+icc -DBASELINE=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DONE_LOOP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DBITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_BITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL_BITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -Ofast invert.c common.c -o invert -lm -fopenmp
+gcc -DBASELINE=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DBASELINE=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DONE_LOOP=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DONE_LOOP=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DBITFLIP=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DBITFLIP=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_BITFLIP=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_BITFLIP=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL_BITFLIP=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DPARALLEL_BITFLIP=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -Ofast -fprofile-generate invert.c common.c -o invert -lm -fopenmp
+gcc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -Ofast -fprofile-use invert.c common.c -o invert -lm -fopenmp
+icc -DBASELINE=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DBASELINE=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DONE_LOOP=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DONE_LOOP=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DBITFLIP=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DBITFLIP=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_BITFLIP=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_BITFLIP=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL_BITFLIP=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DPARALLEL_BITFLIP=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -Ofast -prof-gen=threadsafe invert.c common.c -o invert -lm -fopenmp
+icc -DUNROLL_8_PARALLEL_BITFLIP=1 -g3 -march=native -Ofast -prof-use invert.c common.c -o invert -lm -fopenmp

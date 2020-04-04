@@ -7,6 +7,7 @@
 
 //
 #define INDEX(row, col, n) (((row) * (n)) + (col))
+#define MIN(a, b) ((a) < (b) ? a : b)
 
 //
 typedef unsigned char       u8;

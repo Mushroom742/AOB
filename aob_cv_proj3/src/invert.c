@@ -13,6 +13,10 @@
 #include "common.h"
 
 //
+#include <omp.h>
+#define NUM_THREADS 4
+
+//
 void process_baseline(u8 *frame)
 {
   for (unsigned y = 0 ; y < H ; ++y)
@@ -25,35 +29,195 @@ void process_baseline(u8 *frame)
       }
 }
 
-//
-void process_v1(u8 *frame)
+//2 boucles => 1 boucle
+void process_one_loop(u8 *frame)
 {
   unsigned W_max = W * 3;
-  for (unsigned y = 0 ; y < H ; ++y)
-    for (unsigned x = 0 ; x < W_max ; x += 3)
-      {
-        unsigned indexR = INDEX(y, x, W_max);
-        unsigned indexG = indexR + 1;
-        unsigned indexB = indexG + 1;
-
-        //Invert each colour component of every pixel
-        frame[indexR] = 255 - frame[indexR]; //Red
-        frame[indexG] = 255 - frame[indexG]; //Green
-        frame[indexB] = 255 - frame[indexB]; //Blue
-      }
+  unsigned index_max = INDEX(H, W_max, W_max);
+  for (unsigned i = 0 ; i < index_max ; i++){
+    //Invert each colour component of every pixel
+    frame[i] = 255 - frame[i];
+  }
 }
 
-//
-void process_v2(u8 *frame)
+//bitflip
+void process_bitflip(u8 *frame)
 {
   unsigned W_max = W * 3;
-  for (unsigned y = 0 ; y < H ; ++y){
-    unsigned index_max = INDEX(y, W_max, W_max);
-    for (unsigned index = INDEX(y, 0, W_max) ; index < index_max ; index++)
-      {
-        //Invert each colour component of every pixel
-        frame[index] = 255 - frame[index];
-      }
+  unsigned index_max = INDEX(H, W_max, W_max);
+  for (unsigned i = 0 ; i < index_max ; i++){
+    //Invert each colour component of every pixel
+    frame[i] = ~frame[i];
+  }
+}
+
+//unroll 8
+void process_unroll_8(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  unsigned index_max = INDEX(H, W_max, W_max);
+  unsigned repeat = index_max >> 3; //divided by 8
+  unsigned left = index_max % 8;
+  unsigned i = 0;
+  while(repeat--){
+    //Invert each colour component of every pixel
+    frame[i] = 255 - frame[i];
+    frame[i + 1] = 255 - frame[i + 1];
+    frame[i + 2] = 255 - frame[i + 2];
+    frame[i + 3] = 255 - frame[i + 3];
+    frame[i + 4] = 255 - frame[i + 4];
+    frame[i + 5] = 255 - frame[i + 5];
+    frame[i + 6] = 255 - frame[i + 6];
+    frame[i + 7] = 255 - frame[i + 7];
+
+    i+=8;
+  }
+
+  switch(left){
+    case 7: frame[i + 6] = 255 - frame[i + 6];
+    case 6: frame[i + 5] = 255 - frame[i + 5];
+    case 5: frame[i + 4] = 255 - frame[i + 4];
+    case 4: frame[i + 3] = 255 - frame[i + 3];
+    case 3: frame[i + 2] = 255 - frame[i + 2];
+    case 2: frame[i + 1] = 255 - frame[i + 1];
+    case 1: frame[i] = 255 - frame[i];
+    case 0:
+    default: ;
+  }
+}
+
+//unroll 8 bitflip
+void process_unroll_8_bitflip(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  unsigned index_max = INDEX(H, W_max, W_max);
+  unsigned repeat = index_max >> 3; //divided by 8
+  unsigned left = index_max % 8;
+  unsigned i = 0;
+  while(repeat--){
+    //Invert each colour component of every pixel
+    frame[i] = ~frame[i];
+    frame[i + 1] = ~frame[i + 1];
+    frame[i + 2] = ~frame[i + 2];
+    frame[i + 3] = ~frame[i + 3];
+    frame[i + 4] = ~frame[i + 4];
+    frame[i + 5] = ~frame[i + 5];
+    frame[i + 6] = ~frame[i + 6];
+    frame[i + 7] = ~frame[i + 7];
+
+    i+=8;
+  }
+
+  switch(left){
+    case 7: frame[i + 6] = ~frame[i + 6];
+    case 6: frame[i + 5] = ~frame[i + 5];
+    case 5: frame[i + 4] = ~frame[i + 4];
+    case 4: frame[i + 3] = ~frame[i + 3];
+    case 3: frame[i + 2] = ~frame[i + 2];
+    case 2: frame[i + 1] = ~frame[i + 1];
+    case 1: frame[i] = ~frame[i];
+    case 0:
+    default: ;
+  }
+}
+
+//parallel
+void process_parallel(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  unsigned index_max = INDEX(H, W_max, W_max);
+  omp_set_num_threads(NUM_THREADS);
+  #pragma omp parallel for schedule(static)
+  for (unsigned i = 0 ; i < index_max ; i++){
+    //Invert each colour component of every pixel
+    frame[i] = 255 - frame[i];
+  }
+}
+
+//parallel bitflip
+void process_parallel_bitflip(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  unsigned index_max = INDEX(H, W_max, W_max);
+  omp_set_num_threads(NUM_THREADS);
+  #pragma omp parallel for schedule(static)
+  for (unsigned i = 0 ; i < index_max ; i++){
+    //Invert each colour component of every pixel
+    frame[i] = ~frame[i];
+  }
+}
+
+//unroll 8 parallel
+void process_unroll_8_parallel(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  unsigned index_max = INDEX(H, W_max, W_max);
+  unsigned repeat = index_max >> 3; //divided by 8
+  unsigned left = index_max % 8;
+  unsigned i = 0;
+  omp_set_num_threads(NUM_THREADS);
+  #pragma omp parallel for private(i) schedule(static)
+  for(unsigned j = 0 ; j < repeat ; j++){
+    //Invert each colour component of every pixel
+    i = j << 3; //multiply by 8
+    frame[i] = 255 - frame[i];
+    frame[i + 1] = 255 - frame[i + 1];
+    frame[i + 2] = 255 - frame[i + 2];
+    frame[i + 3] = 255 - frame[i + 3];
+    frame[i + 4] = 255 - frame[i + 4];
+    frame[i + 5] = 255 - frame[i + 5];
+    frame[i + 6] = 255 - frame[i + 6];
+    frame[i + 7] = 255 - frame[i + 7];
+  }
+
+  i = repeat << 3; //repeat * 8
+  switch(left){
+    case 7: frame[i + 6] = 255 - frame[i + 6];
+    case 6: frame[i + 5] = 255 - frame[i + 5];
+    case 5: frame[i + 4] = 255 - frame[i + 4];
+    case 4: frame[i + 3] = 255 - frame[i + 3];
+    case 3: frame[i + 2] = 255 - frame[i + 2];
+    case 2: frame[i + 1] = 255 - frame[i + 1];
+    case 1: frame[i] = 255 - frame[i];
+    case 0:
+    default: ;
+  }
+}
+
+//unroll 8 + parallel bitflip
+void process_unroll_8_parallel_bitflip(u8 *frame)
+{
+  unsigned W_max = W * 3;
+  unsigned index_max = INDEX(H, W_max, W_max);
+  unsigned repeat = index_max >> 3; //divided by 8
+  unsigned left = index_max % 8;
+  unsigned i = 0;
+  omp_set_num_threads(NUM_THREADS);
+  #pragma omp parallel for private(i) schedule(static)
+  for(unsigned j = 0 ; j < repeat ; j++){
+    //Invert each colour component of every pixel
+    i = j << 3; //multiply by 8
+    frame[i] = ~frame[i];
+    frame[i + 1] = ~frame[i + 1];
+    frame[i + 2] = ~frame[i + 2];
+    frame[i + 3] = ~frame[i + 3];
+    frame[i + 4] = ~frame[i + 4];
+    frame[i + 5] = ~frame[i + 5];
+    frame[i + 6] = ~frame[i + 6];
+    frame[i + 7] = ~frame[i + 7];
+  }
+
+  i = repeat << 3; //repeat * 8
+  switch(left){
+    case 7: frame[i + 6] = ~frame[i + 6];
+    case 6: frame[i + 5] = ~frame[i + 5];
+    case 5: frame[i + 4] = ~frame[i + 4];
+    case 4: frame[i + 3] = ~frame[i + 3];
+    case 3: frame[i + 2] = ~frame[i + 2];
+    case 2: frame[i + 1] = ~frame[i + 1];
+    case 1: frame[i] = ~frame[i];
+    case 0:
+    default: ;
   }
 }
 
@@ -98,14 +262,30 @@ int main(int argc, char **argv)
 #if BASELINE
       process_baseline(frame);
 #endif 
-#if V1
-      process_v1(frame);
+#if ONE_LOOP
+      process_one_loop(frame);
 #endif
-#if V2
-      process_v2(frame);
+#if BITFLIP
+      process_bitflip(frame);
 #endif
-     
-      
+#if UNROLL_8
+      process_unroll_8(frame);
+#endif
+#if UNROLL_8_BITFLIP
+      process_unroll_8_bitflip(frame);
+#endif
+#if PARALLEL
+      process_parallel(frame);
+#endif   
+#if PARALLEL_BITFLIP
+      process_parallel_bitflip(frame);
+#endif  
+#if UNROLL_8_PARALLEL
+      process_unroll_8_parallel(frame);
+#endif 
+#if UNROLL_8_PARALLEL_BITFLIP
+      process_unroll_8_parallel_bitflip(frame);
+#endif    
       //Stop
       cycles_a = rdtsc();
 
