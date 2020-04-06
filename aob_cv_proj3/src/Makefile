@@ -32,7 +32,7 @@ inv_unroll_8_parallel_bitflip:
 	$(CC) -DUNROLL_8_PARALLEL_BITFLIP=1 $(CFLAGS) $(OFLAGS) -$(O) invert.c common.c -o invert -lm -fopenmp
 
 sob_baseline:
-	$(CC) -DBASELINE=1 $(CFLAGS) -$(O) sobel.c common.c -o sobel -lm
+	$(CC) -DBASELINE=1 $(CFLAGS) $(OFLAGS) -$(O) sobel.c common.c -o sobel -lm
 
 clean:
 	rm -Rf *~ invert sobel *.gcda *.dyn *.dpi *.lock
