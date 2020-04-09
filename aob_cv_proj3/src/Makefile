@@ -34,5 +34,18 @@ inv_unroll_8_parallel_bitflip:
 sob_baseline:
 	$(CC) -DBASELINE=1 $(CFLAGS) $(OFLAGS) -$(O) sobel.c common.c -o sobel -lm
 
+sob_one_loop:
+	$(CC) -DONE_LOOP=1 $(CFLAGS) $(OFLAGS) -$(O) sobel.c common.c -o sobel -lm
+
+sob_without_convolve:
+	$(CC) -DWITHOUT_CONVOLVE=1 $(CFLAGS) $(OFLAGS) -$(O) sobel.c common.c -o sobel -lm
+
+sob_unroll:
+	$(CC) -DUNROLL=1 $(CFLAGS) $(OFLAGS) -$(O) sobel.c common.c -o sobel -lm
+
+sob_unroll_full:
+	$(CC) -DUNROLL_FULL=1 $(CFLAGS) $(OFLAGS) -$(O) sobel.c common.c -o sobel -lm
+
+
 clean:
 	rm -Rf *~ invert sobel *.gcda *.dyn *.dpi *.lock

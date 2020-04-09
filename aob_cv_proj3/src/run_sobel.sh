@@ -62,7 +62,7 @@ do
         cp "plot_sob.gp" $dir"/"$cc"_"$opt
         
         #Going through invert code variants
-        for variant in sob_baseline
+        for variant in sob_baseline sob_unroll sob_unroll_full
         do
     	#
     	echo -e "\tVariant: "$variant

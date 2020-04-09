@@ -58,6 +58,18 @@ i32 convolve_baseline(u8 *m, i32 *f, u64 fh, u64 fw)
   return r;
 }
 
+//one loop
+i32 convolve_one_loop(u8 *m, i32 *f, u64 fh, u64 fw)
+{
+  i32 r = 0;
+  u64 index_max = INDEX(fh, 0, fw);
+
+  for (u64 i = 0; i < index_max; i++)
+    r += m[i] * f[i];
+  
+  return r;
+}
+
 //
 void sobel_baseline(u8 *cframe, u8 *oframe, f32 threshold)
 {
@@ -76,14 +88,236 @@ void sobel_baseline(u8 *cframe, u8 *oframe, f32 threshold)
   for (u64 i = 0; i < (H - 3); i++)
     for (u64 j = 0; j < ((W * 3) - 3); j++)
       {
-	gx = convolve_baseline(&cframe[INDEX(i, j, W * 3)], f1, 3, 3);
-	gy = convolve_baseline(&cframe[INDEX(i, j, W * 3)], f2, 3, 3);
-      
-	mag = sqrt((gx * gx) + (gy * gy));
-	
-	oframe[INDEX(i, j, W * 3)] = (mag > threshold) ? 255 : mag;
+      	gx = convolve_baseline(&cframe[INDEX(i, j, W * 3)], f1, 3, 3);
+      	gy = convolve_baseline(&cframe[INDEX(i, j, W * 3)], f2, 3, 3);
+            
+      	mag = sqrt((gx * gx) + (gy * gy));
+      	
+      	oframe[INDEX(i, j, W * 3)] = (mag > threshold) ? 255 : mag;
       }
 }
+
+//one loop
+void sobel_one_loop(u8 *cframe, u8 *oframe, f32 threshold)
+{
+  i32 gx, gy;
+  f32 mag = 0.0;
+
+  i32 f1[9] = { -1, 0, 1,
+           -2, 0, 2,
+           -1, 0, 1 }; //3x3 matrix
+  
+  i32 f2[9] = { -1, -2, -1,
+           0, 0, 0,
+           1, 2, 1 }; //3x3 matrix
+
+  u64 col_max = W * 3;
+  u64 col_out = col_max - 3;
+  u64 row_max = (H - 3);
+  
+  //
+  for (u64 i = 0; i < row_max; i++){
+    for (u64 j = i * col_max; (j % col_max) < col_out; j++)
+      {
+        gx = convolve_one_loop(&cframe[j], f1, 3, 3);
+        gy = convolve_one_loop(&cframe[j], f2, 3, 3);
+
+        mag = sqrt((gx * gx) + (gy * gy));
+        
+        oframe[j] = (mag > threshold) ? 255 : mag;
+      }
+  }
+}
+
+//without convolve
+void sobel_without_convolve(u8 *cframe, u8 *oframe, f32 threshold)
+{
+  i32 gx, gy;
+  i32 mag_square;
+  i32 threshold_square = threshold * threshold;
+
+  i32 f1[9] = { -1, 0, 1,
+           -2, 0, 2,
+           -1, 0, 1 }; //3x3 matrix
+  
+  i32 f2[9] = { -1, -2, -1,
+           0, 0, 0,
+           1, 2, 1 }; //3x3 matrix
+
+  u64 col_max = W * 3;
+  u64 col_out = col_max - 3;
+  u64 row_max = (H - 3);
+  
+  //
+  for (u64 i = 0; i < row_max; i++){
+    for (u64 j = i * col_max; (j % col_max) < col_out; j++){
+      gx = 0;
+      gy = 0;
+
+      for(u64 k = 0; k < 9; k++){
+        u64 index = k + j;
+        gx += cframe[index] * f1[k];
+        gy += cframe[index] * f2[k];
+      }
+
+      mag_square = (gx * gx) + (gy * gy);
+      
+      oframe[j] = (mag_square > threshold_square) ? 255 : sqrt(mag_square);
+    }
+  }
+}
+
+static f32 sqrt_fast(f32 x)
+ {
+   u32 i = *(u32*) &x; 
+   // adjust bias
+   i  += 127 << 23;
+   // approximation of square root
+   i >>= 1; 
+   return *(f32*) &i;
+ }
+
+//unroll 3rd loop
+void sobel_unroll(u8 *cframe, u8 *oframe, f32 threshold)
+{
+  u64 index_max = (H - 3) * W * 3;
+  i32 *gx = _mm_malloc(256 * sizeof(i32), 32);
+  i32 *gy = _mm_malloc(256 * sizeof(i32), 32);
+  f32 *mag = _mm_malloc(256 * sizeof(f32), 32);
+  //i32 mag_square;
+  //i32 threshold_square = threshold * threshold;
+
+  /*i32 f1[9] = { -1, 0, 1,
+           -2, 0, 2,
+           -1, 0, 1 }; //3x3 matrix
+  
+  i32 f2[9] = { -1, -2, -1,
+           0, 0, 0,
+           1, 2, 1 }; //3x3 matrix*/
+
+ // u64 col_max = W * 3;
+  //u64 col_out = col_max - 3;
+  //u64 row_max = (H - 3);
+  
+  u64 repeat = index_max >> 8;
+  
+  for(u64 j = 0; j < repeat; j++){
+    u64 index = j << 8;
+    for (u64 i = 0; i < 256; i++){
+
+      gx[i] = 0;
+      gy[i] = 0;
+
+      gx[i] -= cframe[index];
+      gy[i] -= cframe[index];
+      gy[i] -= (cframe[index + 1] << 1);
+      gx[i] += cframe[index + 2];
+      gy[i] -= cframe[index + 2];
+      gx[i] -= (cframe[index + 3] << 1);
+      gx[i] += (cframe[index + 5] << 1);
+      gx[i] -= cframe[index + 6];
+      gy[i] += cframe[index + 6];
+      gy[i] += (cframe[index + 7] << 1);
+      gx[i] += cframe[index + 8];
+      gy[i] += cframe[index + 8];
+
+      index++;
+
+    }
+
+    for (u64 i = 0; i < 256; i++){
+      gx[i] *= gx[i];
+    }
+    for (u64 i = 0; i < 256; i++){
+      gy[i] *= gy[i];
+    }
+    for(u64 i = 0; i < 256; i++){
+      gx[i] += gy[i]; //mag square
+    }
+    for(u64 i = 0; i < 256; i++){
+      mag[i] = sqrt_fast(gx[i]); //mag
+    }
+
+    index = j << 8;
+    for(u64 i = 0; i < 256; i++){
+
+      oframe[index] = (mag[i] > threshold) ? 255 : mag[i];
+      index++;
+    }
+  }
+  
+  _mm_free(gx);
+  _mm_free(gy);
+  _mm_free(mag);
+}
+
+
+
+void sobel_unroll_full(u8 *cframe, u8 *oframe, f32 threshold)
+{
+  u64 index_max = (H - 3) * W * 3;
+  i32 *gx = _mm_malloc(index_max * sizeof(i32), 32);
+  i32 *gy = _mm_malloc(index_max * sizeof(i32), 32);
+  f32 *mag = _mm_malloc(index_max * sizeof(f32), 32);
+
+  //i32 mag_square;
+  //i32 threshold_square = threshold * threshold;
+
+  /*i32 f1[9] = { -1, 0, 1,
+           -2, 0, 2,
+           -1, 0, 1 }; //3x3 matrix
+  
+  i32 f2[9] = { -1, -2, -1,
+           0, 0, 0,
+           1, 2, 1 }; //3x3 matrix*/
+
+ // u64 col_max = W * 3;
+  //u64 col_out = col_max - 3;
+  //u64 row_max = (H - 3);
+  
+  //u64 repeat = index_max >> 8;
+  for (u64 i = 0; i < index_max; i++){
+
+    gx[i] = 0;
+    gy[i] = 0;
+
+    gx[i] -= cframe[i];
+    gy[i] -= cframe[i];
+    gy[i] -= (cframe[i + 1] << 1);
+    gx[i] += cframe[i + 2];
+    gy[i] -= cframe[i + 2];
+    gx[i] -= (cframe[i + 3] << 1);
+    gx[i] += (cframe[i + 5] << 1);
+    gx[i] -= cframe[i + 6];
+    gy[i] += cframe[i + 6];
+    gy[i] += (cframe[i + 7] << 1);
+    gx[i] += cframe[i + 8];
+    gy[i] += cframe[i + 8];
+
+  }
+
+  for (u64 i = 0; i < index_max; i++){
+    gx[i] *= gx[i];
+  }
+  for (u64 i = 0; i < index_max; i++){
+    gy[i] *= gy[i];
+  }
+  for(u64 i = 0; i < index_max; i++){
+    gx[i] += gy[i]; //mag square
+  }
+  for(u64 i = 0; i < index_max; i++){
+    mag[i] = sqrt_fast(gx[i]); //mag
+  }
+  for(u64 i = 0; i < index_max; i++){
+
+    oframe[i] = (mag[i] > threshold) ? 255 : mag[i];  }
+  
+  _mm_free(gx);
+  _mm_free(gy);
+  _mm_free(mag);
+}
+
+
 
 //
 int main(int argc, char **argv)
@@ -126,6 +360,18 @@ int main(int argc, char **argv)
       
 #if BASELINE
       sobel_baseline(cframe, oframe, 100.0);
+#endif
+#if ONE_LOOP
+      sobel_one_loop(cframe, oframe, 100.0);
+#endif
+#if WITHOUT_CONVOLVE
+      sobel_without_convolve(cframe, oframe, 100.0);
+#endif
+#if UNROLL
+      sobel_unroll(cframe, oframe, 100.0);
+#endif
+#if UNROLL_FULL
+      sobel_unroll_full(cframe, oframe, 100.0);
 #endif
       
       //Stop
